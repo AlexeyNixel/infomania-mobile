@@ -1,0 +1,34 @@
+.image.image_resized {
+    display: block;
+    box-sizing: border-box;
+}
+
+.image.image_resized img {
+    width: 100%;
+}
+
+.image.image_resized > figcaption {
+    display: block;
+}
+
+.image-style-side {
+    max-width: 50%;
+    float: right;
+    margin-left: var(--ck-image-style-spacing);
+}
+
+.ck-editor__editable_inline {
+    padding: 0 30px !important;
+}
+
+.ck.ck-content ul,
+.ck.ck-content ul li {
+    list-style-type: inherit;
+}
+
+.ck.ck-content ul {
+    /* Default user agent stylesheet, you can change it to your needs. */
+    padding-left: 40px;
+}
+
+/*# sourceMappingURL=imageResize.css.map */
