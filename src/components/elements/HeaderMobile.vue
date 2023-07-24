@@ -1,27 +1,28 @@
 <template>
   <header class="header">
-    <router-link to="#" class="header__link">
-      <img src="/images/logo.png" alt="" />
+    <router-link to="/" class="header__link">
+      <img src="/images/logo.png" alt=""/>
     </router-link>
     <div class="header__btn-group">
-      <router-link
-        to="#"
-        class="header__btn"
-        :class="link?.style"
-        v-for="(link, index) in links"
-        :key="index"
+      <el-button
+          link
+          class="header__btn"
+          :class="link?.style"
+          v-for="(link, index) in links"
+          :key="index"
+          @click="link?.event"
       >
-        <font-awesome-icon :icon="link.icon" />
-      </router-link>
+        <font-awesome-icon class="header__icon" :class="link?.style" :icon="link.icon"/>
+      </el-button>
     </div>
   </header>
   <div class="search">
     <el-input
-      v-model="search"
-      class="search__input"
-      size="large"
-      placeholder="Поиск по сайту"
-      :prefix-icon="Search"
+        v-model="search"
+        class="search__input"
+        size="large"
+        placeholder="Поиск по сайту"
+        :prefix-icon="Search"
     />
   </div>
 </template>
@@ -29,14 +30,18 @@
 <script setup lang="ts">
 import { Search } from '@element-plus/icons-vue';
 import { ref } from 'vue';
+import { useDark, useToggle } from '@vueuse/core'
 
 const search = ref<string>();
+const darkMode = useDark()
+const toggleDark = useToggle(darkMode)
+const handleDarkMode = () => toggleDark()
 
 const links = [
   { icon: ['fas', 'map-location-dot'] },
   { icon: ['fas', 'clock'] },
   { icon: ['fas', 'wheelchair-move'] },
-  { icon: ['fas', 'sun'], style: 'sun' },
+  { icon: ['fas', 'sun'], style: 'sun', event: handleDarkMode },
 ];
 </script>
 
@@ -63,8 +68,10 @@ const links = [
   }
 
   &__btn {
-    color: #007bff;
     font-size: 1.4rem;
+  }
+  &__icon {
+    color: #007bff;
   }
 }
 

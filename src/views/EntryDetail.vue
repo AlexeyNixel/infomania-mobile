@@ -5,6 +5,7 @@ import { onMounted, ref } from 'vue';
 import '@/styles/ck.css';
 import '@/styles/resize.css';
 import { useRoute } from 'vue-router';
+import moment from 'moment'
 
 const route = useRoute();
 const entryStore = useEntryStore();
@@ -21,11 +22,52 @@ onMounted(async () => {
   <div class="entry" v-viewer>
     <div class="entry__header">
       <div class="entry__title">{{ entry?.title }}</div>
-      <div class="entry__date">{{ entry?.publishedAt }}</div>
-      <div class="entry__department">{{ entry?.department.title }}</div>
+      <div class="entry__info">
+        <div class="entry__date">{{ moment(entry?.publishedAt).format('DD.MM.YYYY') }}</div>
+        <router-link to="" class="entry__department">{{ entry?.department.title }}</router-link>
+      </div>
     </div>
     <div class="entry__content ck-content" v-html="entry?.content"></div>
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(a) {
+  text-decoration: none;
+  font-weight: bold;
+  color: #1d5deb;
+}
+
+.entry {
+  &__title {
+    font-size: var(--title-font-size);
+    font-weight: bold;
+    margin: 1vw 0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__date {
+    font-style: italic;
+  }
+
+  &__department {
+    color: #1d5deb;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  &__content {
+    font-size: var(--regular-font-size);
+  }
+}
+</style>

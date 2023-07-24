@@ -23,7 +23,7 @@ onMounted(async () =>{
 <style scoped lang="scss">
 .slider {
   margin: 1vw 0;
-  border-radius: 20px;
+  border-radius:  var(--border-radius-size);
   &__img {
     width: 100%;
     height: 100%;

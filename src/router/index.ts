@@ -13,6 +13,16 @@ const router = createRouter({
       name: 'entry',
       component: () => import('@/views/EntryDetail.vue'),
     },
+    {
+      path: '/menus/:slug',
+      name: 'menus',
+      component: () => import('@/views/MenuList.vue'),
+    },
+    {
+      path: '/document/:slug',
+      name: 'document',
+      component: () => import('@/views/DocumentDetail.vue'),
+    },
   ],
 });
 

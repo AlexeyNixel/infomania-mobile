@@ -1,17 +1,32 @@
 <template>
   <el-scrollbar class="nav-menu">
     <div class="nav-menu__content">
-      <p class="nav-menu__item" v-for="item in menus" :key="item">
-        {{ item }}
-      </p>
+      <router-link :to="{name:'menus', params:{slug:item.slug}}" class="nav-menu__item" v-for="item in menus" :key="item.slug">
+        {{ item.title }}
+      </router-link>
     </div>
   </el-scrollbar>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-
-const menus = ref(['Читателям', 'О библиотеке', 'Коллегам', 'Документы']);
+const menus = [
+  {
+    title:'Читателям',
+    slug:'COMMON'
+  },
+  {
+    title:'О библиотеке',
+    slug:'ABOUT'
+  },
+  {
+    title:'Коллегам',
+    slug:'COLLEAGUES'
+  },
+  {
+    title:'Документы',
+    slug:'DOCUMENTS'
+  },
+]
 </script>
 
 <style scoped lang="scss">
@@ -30,9 +45,10 @@ const menus = ref(['Читателям', 'О библиотеке', 'Колле�
     width: 100px;
     height: 80px;
     margin-right: 10px;
-    border-radius: 20px;
+    border-radius: var(--border-radius-size);
     color: white;
-    font-size: 0.8rem;
+    font-size: var(--regular-font-size);
+    text-decoration: none;
 
     &:nth-child(1) {
       background: #f44242;

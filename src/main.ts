@@ -12,6 +12,10 @@ import router from './router';
 
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
+import 'element-plus/theme-chalk/dark/css-vars.css';
+
+import './styles/themes/lightTheme.css'
+import './styles/themes/darkTheme.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';

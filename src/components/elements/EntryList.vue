@@ -5,9 +5,9 @@ import type { EntryType } from '@/models/baseModels';
 
 const rubrics: Array<string> = ['aktualnoe', 'anonsy', 'sobytiya'];
 const rubricsTranslate: { [key: string]: string } = {
-  aktualnoe: 'Актуальное',
-  anonsy: 'Анонсы',
-  sobytiya: 'События',
+  'aktualnoe': 'Актуальное',
+  'anonsy': 'Анонсы',
+  'sobytiya': 'События',
 };
 const staticUrl = import.meta.env.VITE_STATIC_URL;
 const entryStore = useEntryStore();
@@ -16,7 +16,6 @@ const menus = ref<any>({});
 
 onMounted(async () => {
   for (let rubric of rubrics) {
-    console.log(rubric);
     entries.value = await entryStore.getEntriesByRubric(rubric, {
       pageSize: 6,
       include: 'preview,rubrics',
@@ -24,7 +23,6 @@ onMounted(async () => {
     });
     menus.value[rubric] = entries.value?.data;
   }
-  console.log(menus.value);
   entries.value = await entryStore.getEntriesByRubric('sobytiya', {
     pageSize: 6,
     include: 'preview,rubrics',
@@ -41,17 +39,17 @@ onMounted(async () => {
     <el-scrollbar>
       <div class="entry-list__item">
         <router-link
-          :to="{ name: 'entry', params: { slug: entry.slug } }"
-          v-for="entry in items"
-          :key="entry.id"
-          class="entry-list__link"
+            :to="{ name: 'entry', params: { slug: entry.slug } }"
+            v-for="entry in items"
+            :key="entry.id"
+            class="entry-list__link"
         >
           <img
-            :src="staticUrl + entry.preview.path"
-            alt=""
-            class="entry-list__img"
+              :src="staticUrl + entry.preview.path"
+              alt=""
+              class="entry-list__img"
           />
-          {{ entry.title.slice(0, 60) + '...' }}
+          <span class="entry-list__title">{{ entry.title.slice(0, 60) + '...' }}</span>
         </router-link>
       </div>
     </el-scrollbar>
@@ -65,6 +63,13 @@ onMounted(async () => {
     padding: 10px 5px;
   }
 
+  &__title {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   &__link {
     box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
     flex-shrink: 0;
@@ -72,10 +77,11 @@ onMounted(async () => {
     height: 250px;
     margin-right: 10px;
     text-align: center;
-    border-radius: 20px;
-    font-size: 0.8rem;
+    border-radius: var(--border-radius-size);
+    font-size: var(--regular-font-size);
     text-decoration: none;
-    color: black;
+    color: var(--font-color);
+    background: var(--element-bg-color);
   }
 
   &__img {
@@ -83,7 +89,11 @@ onMounted(async () => {
     height: 60%;
     overflow: hidden;
     object-fit: cover;
-    border-radius: 20px 20px 0 0;
+    border-radius: var(--border-radius-size) var(--border-radius-size) 0 0;
+  }
+
+  &__rubric-title {
+    font-size: var(--title-font-size);
   }
 }
 </style>
