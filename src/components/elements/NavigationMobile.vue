@@ -1,33 +1,38 @@
+<script setup lang="ts">
+const menus = [
+  {
+    title: "Читателям",
+    slug: "COMMON",
+  },
+  {
+    title: "О библиотеке",
+    slug: "ABOUT",
+  },
+  {
+    title: "Коллегам",
+    slug: "COLLEAGUES",
+  },
+  {
+    title: "Документы",
+    slug: "DOCUMENTS",
+  },
+];
+</script>
+
 <template>
   <el-scrollbar class="nav-menu">
     <div class="nav-menu__content">
-      <router-link :to="{name:'menus', params:{slug:item.slug}}" class="nav-menu__item" v-for="item in menus" :key="item.slug">
+      <router-link
+        :to="{ name: 'menus', params: { slug: item.slug } }"
+        class="nav-menu__item"
+        v-for="item in menus"
+        :key="item.slug"
+      >
         {{ item.title }}
       </router-link>
     </div>
   </el-scrollbar>
 </template>
-
-<script setup lang="ts">
-const menus = [
-  {
-    title:'Читателям',
-    slug:'COMMON'
-  },
-  {
-    title:'О библиотеке',
-    slug:'ABOUT'
-  },
-  {
-    title:'Коллегам',
-    slug:'COLLEAGUES'
-  },
-  {
-    title:'Документы',
-    slug:'DOCUMENTS'
-  },
-]
-</script>
 
 <style scoped lang="scss">
 .nav-menu {

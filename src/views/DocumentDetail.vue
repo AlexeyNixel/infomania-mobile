@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { useMenuStore } from "@/stores/menuStore";
-import type { MenuItemType } from "@/models/baseModels";
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
-import moment from "moment/moment";
+import { useMenuStore } from '@/stores/menuStore';
+import type { MenuItemType } from '@/models/baseModels';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import moment from 'moment/moment';
 
-const route = useRoute()
-const slug = ref<string>(route.params.slug as string)
-const menuStore = useMenuStore()
-const document = ref<MenuItemType>()
+const route = useRoute();
+const slug = ref<string>(route.params.slug as string);
+const menuStore = useMenuStore();
+const document = ref<MenuItemType>();
 
 onMounted(async () => {
   document.value = await menuStore.getMenu(slug.value, {
-    include: 'document'
-  })
-})
+    include: 'document',
+  });
+});
 </script>
 
 <template>
@@ -22,10 +22,15 @@ onMounted(async () => {
     <div class="entry__header">
       <div class="entry__title">{{ document?.document.title }}</div>
       <div class="entry__info">
-        <div class="entry__date">{{ moment(document?.document.publishedAt).format('DD.MM.YYYY') }}</div>
+        <div class="entry__date">
+          {{ moment(document?.document.publishedAt).format('DD.MM.YYYY') }}
+        </div>
       </div>
     </div>
-    <div class="entry__content ck-content" v-html="document?.document.content"></div>
+    <div
+      class="entry__content ck-content"
+      v-html="document?.document.content"
+    ></div>
   </div>
 </template>
 
@@ -55,6 +60,7 @@ onMounted(async () => {
 
   &__date {
     font-style: italic;
+    font-size: var(--regular-font-size);
   }
 
   &__department {

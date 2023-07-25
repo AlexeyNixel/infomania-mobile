@@ -7,8 +7,8 @@ export const useEntryStore = defineStore('entry', () => {
     return await findEntry(slug, params);
   };
   const getEntries = async (params?: ParamsType) => {
-    const { data } = await findEntries(params);
-    return data;
+    const { data, meta } = await findEntries(params);
+    return {data, meta};
   };
 
   const getEntriesByRubric = async (slug: string, params?: ParamsType) => {
