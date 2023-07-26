@@ -58,12 +58,14 @@ onMounted(async () => {
 
   &__date {
     font-style: italic;
+    font-size: var(--regular-font-size);
   }
 
   &__department {
     color: #1d5deb;
     font-weight: bold;
     text-decoration: none;
+    font-size: var(--regular-font-size);
   }
 
   &__content {

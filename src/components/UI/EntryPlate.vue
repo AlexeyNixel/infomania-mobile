@@ -10,7 +10,7 @@ defineProps<PropsType>();
 </script>
 
 <template>
-  <router-link to="" class="entry">
+  <router-link :to="{name: 'entry', params:{slug: entry.slug}}" class="entry">
     <img
       v-if="entry.preview?.path"
       :src="staticUrl + entry.preview?.path"

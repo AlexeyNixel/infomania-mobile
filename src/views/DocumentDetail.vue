@@ -42,9 +42,11 @@ onMounted(async () => {
 }
 .entry {
   &__title {
-    font-size: var(--title-font-size);
+    font-size: 1.1rem;
     font-weight: bold;
     margin: 1vw 0;
+    padding-left: 10px;
+    font-family: 'montserrat';
   }
 
   &__header {
@@ -71,6 +73,9 @@ onMounted(async () => {
 
   &__content {
     font-size: var(--regular-font-size);
+    word-break: break-all;
+    padding: 0 10px;
+    font-family: 'montserrat';
   }
 }
 :deep(img) {

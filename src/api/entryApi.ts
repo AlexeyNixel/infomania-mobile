@@ -4,6 +4,7 @@ import { Routes } from '@/api/routes';
 
 const { ENTRY_ROUTE } = Routes;
 const { RUBRIC_ROUTE } = Routes;
+const { DEPARTMENT_ROUTE } = Routes;
 
 export const findEntry = async (slug: string, params?: ParamsType) => {
   const { data } = await axiosApi.get(`${ENTRY_ROUTE}${slug}`, { params });
@@ -21,6 +22,17 @@ export const findEntriesByRubric = async (
 ): Promise<any> => {
   //@ts-ignore
   const { data, meta } = await axiosApi.get(`${RUBRIC_ROUTE}${slug}/entries`, {
+    params: params,
+  });
+  return { data, meta };
+};
+
+export const findEntriesByDepartment = async (
+  slug?: string,
+  params?: ParamsType,
+): Promise<any> => {
+  //@ts-ignore
+  const { data, meta } = await axiosApi.get(`${DEPARTMENT_ROUTE}${slug}/entries`, {
     params: params,
   });
   return { data, meta };

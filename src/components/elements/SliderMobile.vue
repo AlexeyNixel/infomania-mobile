@@ -8,14 +8,16 @@ const slides = ref<SliderType[]>()
 const staticUrl = import.meta.env.VITE_STATIC_URL
 
 onMounted(async () =>{
-  slides.value = await sliderStore.getSlides({include: 'image'})
+  slides.value = await sliderStore.getSlides({include: 'image,entry'})
 })
 </script>
 
 <template>
   <el-carousel height="150px" indicator-position='none' class="slider">
     <el-carousel-item v-for="item in slides" :key="item" class="slider__item">
-      <img :src="staticUrl+item.image.path" alt="" class="slider__img">
+      <router-link :to='{name: "entry", params: {slug:item.entry.slug}}'>
+        <img :src="staticUrl+item.image.path" alt="" class="slider__img">
+      </router-link>
     </el-carousel-item>
   </el-carousel>
 </template>
