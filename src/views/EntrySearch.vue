@@ -17,6 +17,7 @@ const globalStore = useGlobalStore();
 
 const { dateFilterSelected } = storeToRefs(filterStore);
 const { departmentFilter } = storeToRefs(filterStore);
+const { isFilter } = storeToRefs(filterStore);
 const { toDate } = storeToRefs(filterStore);
 
 const entries = ref<EntryType[]>();
@@ -31,9 +32,8 @@ const handleSearch = () => {
   router.push({ name: 'search', query: { search: search.value } });
 };
 const handleOpenFilters = () => {
-  if (!globalStore.isFiltersWindow) {
-    globalStore.isFiltersWindow = !globalStore.isFiltersWindow;
-  }
+  isFilter.value = !isFilter.value
+  console.log(isFilter.value);
 };
 
 const handleClearSearch = () => {

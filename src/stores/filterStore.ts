@@ -1,7 +1,10 @@
 import { defineStore } from 'pinia';
+import moment from 'moment/moment';
 
 export const useFilterStore = defineStore('filters', {
   state: () => ({
+    isFilter: false,
+    filterComponent: 'index',
     dateFilterSelected: 'Сначала новые',
     fromDate: '',
     toDate: '',
@@ -18,6 +21,14 @@ export const useFilterStore = defineStore('filters', {
       this.fromDate = ''
       this.toDate = ''
       this.departmentFilter = ''
+    },
+    generateDateArray () {
+      const currentYear = Number(moment(new Date()).format('YYYY'));
+      const array = [];
+      for (let i = currentYear; i >= 2010; i--) {
+        array.push(i);
+      }
+      return array;
     }
   }
 });

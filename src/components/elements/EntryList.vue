@@ -94,6 +94,7 @@ onMounted(async () => {
 
   &__rubric-title {
     font-size: var(--title-font-size);
+    padding: 0 5px;
   }
 }
 </style>

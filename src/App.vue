@@ -15,9 +15,6 @@ import { watch } from 'vue';
 const globalStore = useGlobalStore();
 const { isFiltersWindow } = storeToRefs(globalStore);
 
-watch(isFiltersWindow, () => {
-  document.querySelector('body')?.classList.toggle('frozen');
-});
 </script>
 
 <style scoped></style>

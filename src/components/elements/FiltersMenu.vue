@@ -1,127 +1,101 @@
 <script setup lang='ts'>
-import { onMounted, ref } from 'vue';
-import { useGlobalStore } from '@/stores/globalStore';
+import { ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useFilterStore } from '@/stores/filterStore';
-import moment from 'moment';
-import { useDepartmentStore } from '@/stores/departmentStore';
-import type { DepartmentType } from '@/models/baseModels';
 import SortTemplate from '@/components/elements/filterElements/SortTemplate.vue';
 import DepartmentSortTemplate from '@/components/elements/filterElements/DepartmentSortTemplate.vue';
+import MainSort from '@/components/elements/filterElements/MainSort.vue';
+
+const filterStore = useFilterStore();
+
+const { isFilter } = storeToRefs(filterStore);
+const { filterComponent } = storeToRefs(filterStore);
+
+const isSortOpen = ref<boolean>(false);
 
 const component: { [key: string]: any } = {
   'sort': SortTemplate,
   'depart': DepartmentSortTemplate,
+  'index': MainSort,
 };
 
-const currentComponent = ref<string>();
-
-const globalStore = useGlobalStore();
-const filterStore = useFilterStore();
-const departmentStore = useDepartmentStore();
-
-const departments = ref<DepartmentType[]>();
-
-const { isFiltersWindow } = storeToRefs(globalStore);
-const { dateFilterSelected } = storeToRefs(filterStore);
-const { departmentFilter } = storeToRefs(filterStore);
-
-const isSortOpen = ref<boolean>(false);
-
-const swapWindow = (model: string) => {
-  isFiltersWindow.value = !isFiltersWindow.value;
-  isSortOpen.value = !isSortOpen.value;
-  currentComponent.value = model;
-};
-
-onMounted(async () => {
-  departments.value = await departmentStore.getDepartments();
-});
-
-const generateYearArray = () => {
-  const currentYear = Number(moment(new Date()).format('YYYY'));
-  let array = [];
-  for (let i = currentYear; i >= 2010; i--) {
-    array.push(i);
-  }
-  return array;
-};
-
-const closeFilterMenu = (e: Event) => {
-  const filterMenu = document.querySelector('.substrate');
-  if (isSortOpen.value) {
-    isFiltersWindow.value = !isFiltersWindow.value;
-    isSortOpen.value = !isSortOpen.value;
+const closeFilterMenu = () => {
+  if (filterComponent.value !== 'index') {
+    filterComponent.value = 'index';
     return;
   }
-  if (e.target === filterMenu)
-    globalStore.isFiltersWindow = !globalStore.isFiltersWindow;
+  isFilter.value = !isFilter.value;
 };
+
+watch(isFilter, () => {
+  if(!isFilter.value) document.body.style.overflow = ''
+  else document.body.style.overflow = 'hidden'
+})
 </script>
 
 <template>
   <Transition name='opacity' :duration='300'>
     <div
       class='substrate'
-      v-if='isFiltersWindow || isSortOpen'
+      v-if='isFilter || isSortOpen'
       style='transition: all 0.3s'
       @click='closeFilterMenu'
     />
   </Transition>
+  <!--  <Transition name='nested' :duration='300'>-->
+  <!--    <div class='filters outer' v-if='isFiltersWindow '>-->
+  <!--      <div class='filters-header'>-->
+  <!--        <div class='filters-header__title filters-header__item'>Фильтры</div>-->
+  <!--        <div class='filters-header__clear filters-header__item'-->
+  <!--             @click='filterStore.clearFilter'>Очистить-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--      <div class='filters-content'>-->
+  <!--        <div class='filters-content__item'>-->
+  <!--          <div class='filters-content__title'>Сортировка</div>-->
+  <!--          <el-select-->
+  <!--            disabled-->
+  <!--            @click='swapWindow("sort")'-->
+  <!--            v-model='dateFilterSelected'-->
+  <!--            placeholder='123'-->
+  <!--          />-->
+  <!--        </div>-->
+  <!--        <div class='filters-content__item'>-->
+  <!--          <div class='filters-content__title'>Определенный год</div>-->
+  <!--          <el-scrollbar>-->
+  <!--            <div class='filters-content__flex'>-->
+  <!--              <div-->
+  <!--                v-for='item in generateYearArray()'-->
+  <!--                :key='item'-->
+  <!--                class='filters-content__year'-->
+  <!--                @click='filterStore.generateDate(item.toString())'-->
+  <!--              >-->
+  <!--                {{ item }}-->
+  <!--              </div>-->
+  <!--            </div>-->
+  <!--          </el-scrollbar>-->
+  <!--        </div>-->
+  <!--        <div class='filters-content__item'>-->
+  <!--          <div class='filters-content__title'>По отделу</div>-->
+  <!--          <el-select-->
+  <!--            disabled-->
+  <!--            @click='swapWindow("depart")'-->
+  <!--            v-model='departmentFilter'-->
+  <!--            placeholder='Отдел'-->
+  <!--          >-->
+  <!--            <el-option-->
+  <!--              v-for='item in departments'-->
+  <!--              :key='item.slug'-->
+  <!--              :label='item.title'-->
+  <!--              :value='item.slug'-->
+  <!--            />-->
+  <!--          </el-select>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </Transition>-->
   <Transition name='nested' :duration='300'>
-    <div class='filters outer' v-if='isFiltersWindow '>
-      <div class='filters-header'>
-        <div class='filters-header__title filters-header__item'>Фильтры</div>
-        <div class='filters-header__clear filters-header__item'
-             @click='filterStore.clearFilter'>Очистить
-        </div>
-      </div>
-      <div class='filters-content'>
-        <div class='filters-content__item'>
-          <div class='filters-content__title'>Сортировка</div>
-          <el-select
-            disabled
-            @click='swapWindow("sort")'
-            v-model='dateFilterSelected'
-            placeholder='123'
-          />
-        </div>
-        <div class='filters-content__item'>
-          <div class='filters-content__title'>Определенный год</div>
-          <el-scrollbar>
-            <div class='filters-content__flex'>
-              <div
-                v-for='item in generateYearArray()'
-                :key='item'
-                class='filters-content__year'
-                @click='filterStore.generateDate(item.toString())'
-              >
-                {{ item }}
-              </div>
-            </div>
-          </el-scrollbar>
-        </div>
-        <div class='filters-content__item'>
-          <div class='filters-content__title'>По отделу</div>
-          <el-select
-            disabled
-            @click='swapWindow("depart")'
-            v-model='departmentFilter'
-            placeholder='Отдел'
-          >
-            <el-option
-              v-for='item in departments'
-              :key='item.slug'
-              :label='item.title'
-              :value='item.slug'
-            />
-          </el-select>
-        </div>
-      </div>
-    </div>
-  </Transition>
-  <Transition name='nested' :duration='300'>
-    <component v-if='isSortOpen' :is='component[currentComponent]'></component>
+    <component v-if='isFilter' :is='component[filterComponent]'></component>
   </Transition>
 </template>
 

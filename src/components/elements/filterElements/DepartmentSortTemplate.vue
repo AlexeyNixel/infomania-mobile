@@ -30,7 +30,7 @@ onMounted(async () => {
       <div
         class='sort__item'
         v-for='item in departments'
-        :key='item.value'
+        :key='item.id'
         @click='choseDepartment(item.slug)'
       >
         <div class='sort__content'>
