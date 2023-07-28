@@ -4,6 +4,7 @@ import { ElSlider } from 'element-plus';
 
 type PropsType = {
   id: string;
+  height: string
 };
 
 const props = defineProps<PropsType>();
@@ -46,7 +47,7 @@ onMounted(async () => {
     arrow="never"
     ref="slider"
     :interval="6000"
-    height="250px"
+    :height="height"
     indicator-position="none"
     :class="props.id"
   >

@@ -1,23 +1,27 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useBillboardStore } from '@/stores/billboardStore';
-import type { BillboardType } from '@/models/baseModels';
+import { onMounted, ref, watch } from 'vue';
 import moment from 'moment';
-import type { CalendarDateType, CalendarInstance } from 'element-plus';
 import CarouselTemplate from '@/components/UI/CarouselTemplate.vue';
+import type { CalendarDateType } from 'element-plus';
+import type { BillboardType } from '@/models/baseModels';
+import { AffichePlaces } from '@/constants/eventPlace';
 
 const billboardStore = useBillboardStore();
-
-const currentEvent = ref<Array<BillboardType>>([]);
-const calendar = ref<CalendarInstance>();
-const isCalendar = ref<boolean>(false);
-const eventsDateArray = ref<Array<string>>([]);
 const billboards = ref<BillboardType[]>();
+
+const events = ref<string[]>([]);
+const place = AffichePlaces
 
 const startSwipe = ref<number>(0);
 const endSwipe = ref<number>(0);
 const timer = ref();
-const target = ref();
+
+const calendar = ref<any>();
+
+const { isCalendar } = storeToRefs(billboardStore);
+const { currentEvent } = storeToRefs(billboardStore);
 
 const handleSwipeMonth = () => {
   if (startSwipe.value - endSwipe.value > 12) {
@@ -27,60 +31,73 @@ const handleSwipeMonth = () => {
   }
 };
 
-const handleOpenEvent = (slug: string) => {
-  console.log(slug);
-};
-
 const selectDate = (val: CalendarDateType) => {
   if (!calendar.value) return;
 
   calendar.value.selectDate(val);
-  const firstDate = moment(calendar.value.selectedDay.$d)
+  const fromDate = moment(calendar.value.selectedDay.$d)
     .startOf('month')
     .format('YYYY-MM-DD');
-  const lastDate = moment(calendar.value.selectedDay.$d)
+  const toDate = moment(calendar.value.selectedDay.$d)
     .endOf('month')
     .format('YYYY-MM-DD');
-  fetchData(firstDate, lastDate);
+  fetchBillboards(fromDate, toDate);
 };
 
-const whatADay = (date: string) => {
-  if (moment(date).locale('ru').format('dd') === 'пн') {
-    return 'dayOff';
-  } else if (eventsDateArray.value.includes(`${date}T00:00:00.000Z`)) {
-    return 'eventDay';
-  } else return 'regularDay';
+const eventCheck = (date: string) => {
+  if (moment(date).locale('ru').format('dd') === 'пн') return 'offDay';
+  else if (events.value.includes(date)) return 'eventDay';
+  else return 'regularDay';
 };
 
-const fetchData = async (firstDate: string, lastDate: string) => {
-  billboards.value = await billboardStore.getBillboards({
-    fromDate: `${firstDate}T00:00:00.000Z`,
-    toDate: `${lastDate}T00:00:00.000Z`,
-    pageSize: 60,
-    orderBy: 'eventDate',
+const fetchBillboards = async (fromDate: string, toDate: string) => {
+  billboards.value = await billboardStore.getBillboardsByDate(
+    fromDate,
+    toDate,
+    {
+      pageSize: 60,
+      orderBy: 'eventDate',
+    },
+  );
+  billboards.value?.forEach((item) =>
+    events.value?.push(moment(item.eventDate).format('YYYY-MM-DD')),
+  );
+};
+
+const handleFetchEvent = async (date: string) => {
+  currentEvent.value = await billboardStore.getBillboards({
+    searchByField: `eventDate=${date}T00:00:00.000Z`,
   });
-
-  billboards.value?.forEach((item) => {
-    eventsDateArray.value?.push(item.eventDate);
-    if (moment(item.eventDate).format('YYYY-MM-DD') === '2023-07-29')
-      currentEvent.value.push(item);
-  });
+  isCalendar.value = !isCalendar.value;
 };
+
+onMounted(async () => {
+  const fromDate: string = moment(new Date())
+    .startOf('month')
+    .format('YYYY-MM-DD');
+  const toDate: string = moment(new Date()).endOf('month').format('YYYY-MM-DD');
+  await fetchBillboards(fromDate, toDate);
+
+  const currentDate = moment(new Date()).format('YYYY-MM-DD');
+
+  currentEvent.value = await billboardStore.getBillboards({
+    searchByField: `eventDate=${currentDate}T00:00:00.000Z`,
+  });
+});
 
 watch(isCalendar, () => {
-  const promise = new Promise((resolve, reject) => {
+  const promise = new Promise((resolve) => {
     setTimeout(() => {
-      target.value = document.querySelector('.calendar')!;
-      resolve(null);
+      const target = document.querySelector('.calendar');
+      resolve(target);
     }, 350);
   });
 
-  promise.then(() => {
-    target.value.addEventListener('touchstart', (e: any) => {
+  promise.then((target: Document) => {
+    target.addEventListener('touchstart', (e: any) => {
       startSwipe.value = e.touches[0].clientX;
     });
-
-    target.value.addEventListener('touchmove', (e: any) => {
+    target.addEventListener('touchmove', (e: any) => {
       if (timer.value) return;
       timer.value = setTimeout(() => {
         timer.value = null;
@@ -90,66 +107,53 @@ watch(isCalendar, () => {
     });
   });
 });
-
-const handleEventCheck = async (date: string) => {
-  billboards.value = await billboardStore.getBillboards({
-    searchByField: `eventDate=${date}T00:00:00.000Z`,
-  });
-  console.log(billboards.value);
-  currentEvent.value.push(billboards.value);
-};
-
-onMounted(async () => {
-  const firstDate = moment(new Date()).startOf('month').format('YYYY-MM-DD');
-  const lastDate = moment(new Date()).endOf('month').format('YYYY-MM-DD');
-  await fetchData(firstDate, lastDate);
-});
 </script>
 
 <template>
   <div class="date-picker" @click="isCalendar = !isCalendar">
-    <el-date-picker
-      class="date-picker__btn"
-      disabled
-      type="date"
-      placeholder="Pick a day"
-      style="width: 100%"
-    />
+    <div v-if="currentEvent.length > 0" class='date-picker__content'>
+      <div class='date-picker__day'>
+        {{ moment(currentEvent[0].eventDate).format('DD') }}
+        {{ moment(currentEvent[0].eventDate).format('dd') }}
+      </div>
+      <div class='date-picker__year'>
+        {{ moment(currentEvent[0].eventDate).format('MMM') }}
+        {{ moment(currentEvent[0].eventDate).format('YYYY') }}
+      </div>
+    </div>
+
   </div>
-  <Transition name="fade" :duration="300" mode="out-in">
-    <el-calendar ref="calendar" class="calendar" v-if="isCalendar">
-      <template class="calendar-header" #header="{ date }">
-        <div class="calendar-header__title">{{ date }}</div>
-      </template>
+  <Transition name="fade" mode="out-in">
+    <el-calendar v-if="isCalendar" ref="calendar" class="calendar">
       <template #date-cell="dateCell">
         <div
-          v-if="whatADay(dateCell.data.day) === 'eventDay'"
-          class="event-day"
-          @click="handleEventCheck(dateCell.data.day)"
+          class="calendar-day calendar-day_event"
+          v-if="eventCheck(dateCell.data.day) === 'eventDay'"
+          @click="handleFetchEvent(dateCell.data.day)"
         >
           {{ dateCell.data.day.slice(-2) }}
         </div>
         <div
-          v-else-if="whatADay(dateCell.data.day) === 'dayOff'"
-          class="date-off"
+          class="calendar-day calendar-day_off"
+          v-else-if="eventCheck(dateCell.data.day) === 'offDay'"
         >
           {{ dateCell.data.day.slice(-2) }}
         </div>
-        <div
-          v-else-if="whatADay(dateCell.data.day) === 'regularDay'"
-          class="regular-day"
-        >
+        <div class="calendar-day calendar-day_regular" v-else>
           {{ dateCell.data.day.slice(-2) }}
         </div>
       </template>
     </el-calendar>
-
-    <div v-else-if="currentEvent.length > 0" class="event">
-      <carousel-template id="eventId">
-        <el-carousel-item v-for="item in currentEvent" :key="item">
-          <div class="event__title">{{ item.title }}</div>
-          <div class="event__content" v-html="item.desc"></div>
-          <div class="event__place">{{ item.eventDate }}</div>
+    <div v-else>
+      <carousel-template id="event-content" height="350px">
+        <el-carousel-item
+          v-for="item in currentEvent"
+          :key="item.title"
+          class="event-content"
+        >
+          <div class="event-content__title">{{ item.title }}</div>
+          <div class="event-content__desc" v-html="item.desc"></div>
+          <div class="event-content__place">{{place[item.eventPlace]}}</div>
         </el-carousel-item>
       </carousel-template>
     </div>
@@ -158,51 +162,47 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 .date-picker {
-  margin: 1vh 0;
-}
-
-.date-picker-btn {
-  background: var(--element-bg-color);
-  margin: 1vh 0;
-}
-
-:deep(.el-input.is-disabled .el-input__wrapper) {
-  box-shadow: none;
-  border-radius: 10px;
-}
-
-.event {
-  height: 40vh;
+  padding: 10px;
   background: var(--element-bg-color);
   border-radius: var(--border-radius-size);
-  padding: 10px;
-  font-size: var(--regular-font-size);
-  text-align: left !important;
+  margin-bottom: 1vh;
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.event-content {
+  background: var(--element-bg-color);
+  padding: 5px;
+  border-radius: var(--border-radius-size);
 
   &__title {
     font-size: var(--title-font-size);
     margin-bottom: 1vh;
   }
+
+  &__desc {
+    font-size: var(--regular-font-size);
+  }
 }
 
-.event-day {
+.calendar-day {
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
-  border: 1px solid #0d4cd3;
-  border-radius: 6px;
-}
+  border-radius: 10px;
 
-.date-off {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  border: 1px solid orangered;
-  border-radius: 6px;
+  &_event {
+    border: 2px solid blue;
+  }
+
+  &_off {
+    border: 2px solid orangered;
+  }
 }
 
 :deep(.el-calendar__body) {
@@ -226,6 +226,7 @@ onMounted(async () => {
 
 .fade-enter-from,
 .fade-leave-to {
+  transform: translateY(30px);
   opacity: 0;
 }
 </style>
