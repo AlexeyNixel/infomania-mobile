@@ -110,57 +110,69 @@ watch(isCalendar, () => {
 </script>
 
 <template>
-  <div class="date-picker" @click="isCalendar = !isCalendar">
-    <div v-if="currentEvent.length > 0" class='date-picker__content'>
-      <div class='date-picker__day'>
-        {{ moment(currentEvent[0].eventDate).format('DD') }}
-        {{ moment(currentEvent[0].eventDate).format('dd') }}
+  <div class='calendar-menu'>
+    <div class="date-picker" @click="isCalendar = !isCalendar">
+      <div v-if="currentEvent.length > 0" class='date-picker__content'>
+        <div class='date-picker__day'>
+          {{ moment(currentEvent[0].eventDate).format('DD') }}
+          {{ moment(currentEvent[0].eventDate).format('dd') }}
+        </div>
+        <div class='date-picker__year'>
+          {{ moment(currentEvent[0].eventDate).format('MMM') }}
+          {{ moment(currentEvent[0].eventDate).format('YYYY') }}
+        </div>
       </div>
-      <div class='date-picker__year'>
-        {{ moment(currentEvent[0].eventDate).format('MMM') }}
-        {{ moment(currentEvent[0].eventDate).format('YYYY') }}
-      </div>
-    </div>
 
-  </div>
-  <Transition name="fade" mode="out-in">
-    <el-calendar v-if="isCalendar" ref="calendar" class="calendar">
-      <template #date-cell="dateCell">
-        <div
-          class="calendar-day calendar-day_event"
-          v-if="eventCheck(dateCell.data.day) === 'eventDay'"
-          @click="handleFetchEvent(dateCell.data.day)"
-        >
-          {{ dateCell.data.day.slice(-2) }}
-        </div>
-        <div
-          class="calendar-day calendar-day_off"
-          v-else-if="eventCheck(dateCell.data.day) === 'offDay'"
-        >
-          {{ dateCell.data.day.slice(-2) }}
-        </div>
-        <div class="calendar-day calendar-day_regular" v-else>
-          {{ dateCell.data.day.slice(-2) }}
-        </div>
-      </template>
-    </el-calendar>
-    <div v-else>
-      <carousel-template id="event-content" height="350px">
-        <el-carousel-item
-          v-for="item in currentEvent"
-          :key="item.title"
-          class="event-content"
-        >
-          <div class="event-content__title">{{ item.title }}</div>
-          <div class="event-content__desc" v-html="item.desc"></div>
-          <div class="event-content__place">{{place[item.eventPlace]}}</div>
-        </el-carousel-item>
-      </carousel-template>
     </div>
-  </Transition>
+    <Transition name="fade" mode="out-in">
+      <el-calendar v-if="isCalendar" ref="calendar" class="calendar">
+        <template #header='{header}'>
+          <div></div>
+        </template>
+        <template #date-cell="dateCell">
+          <div
+            class="calendar-day calendar-day_event"
+            v-if="eventCheck(dateCell.data.day) === 'eventDay'"
+            @click="handleFetchEvent(dateCell.data.day)"
+          >
+            {{ dateCell.data.day.slice(-2) }}
+          </div>
+          <div
+            class="calendar-day calendar-day_off"
+            v-else-if="eventCheck(dateCell.data.day) === 'offDay'"
+          >
+            {{ dateCell.data.day.slice(-2) }}
+          </div>
+          <div class="calendar-day calendar-day_regular" v-else>
+            {{ dateCell.data.day.slice(-2) }}
+          </div>
+        </template>
+      </el-calendar>
+      <div v-else>
+        <carousel-template id="event-content" height="274px">
+          <el-carousel-item
+            v-for="item in currentEvent"
+            :key="item.title"
+            class="event-content"
+          >
+            <div class="event-content__title">{{ item.title }}</div>
+            <el-scrollbar height="400px">
+              <div class="event-content__desc" v-html="item.desc"></div>
+            </el-scrollbar>
+
+            <div class="event-content__place">{{place[item.eventPlace]}}</div>
+          </el-carousel-item>
+        </carousel-template>
+      </div>
+    </Transition>
+  </div>
 </template>
 
 <style scoped lang="scss">
+.calendar-menu {
+  margin: 1vh 0;
+}
+
 .date-picker {
   padding: 10px;
   background: var(--element-bg-color);
@@ -174,9 +186,11 @@ watch(isCalendar, () => {
 }
 
 .event-content {
-  background: var(--element-bg-color);
-  padding: 5px;
   border-radius: var(--border-radius-size);
+  background: var(--element-bg-color);
+  flex-direction: column;
+  padding: 5px;
+  display: flex;
 
   &__title {
     font-size: var(--title-font-size);
@@ -185,6 +199,13 @@ watch(isCalendar, () => {
 
   &__desc {
     font-size: var(--regular-font-size);
+    height: 100%;
+  }
+
+  &__place {
+    align-self: end;
+    font-size: var(--regular-font-size);
+    font-weight: bold;
   }
 }
 
@@ -197,7 +218,7 @@ watch(isCalendar, () => {
   border-radius: 10px;
 
   &_event {
-    border: 2px solid blue;
+    border: 2px solid #4285f4;
   }
 
   &_off {
@@ -205,8 +226,14 @@ watch(isCalendar, () => {
   }
 }
 
+.el-calendar {
+  background: var(--element-bg-color);
+  border-radius: var(--border-radius-size);
+}
+
 :deep(.el-calendar__body) {
   padding: 0;
+
 }
 
 :deep(.el-calendar-table .el-calendar-day) {
@@ -217,6 +244,22 @@ watch(isCalendar, () => {
   height: 40px !important;
   width: 100% !important;
   padding: 0;
+}
+
+:deep(.el-calendar-table td) {
+  border: none;
+}
+
+:deep(.el-calendar-table tr td:first-child) {
+  border: none;
+}
+
+:deep(.el-calendar-table:not(.is-range) td.prev) {
+  border: none;
+}
+
+:deep(.el-calendar__header) {
+  display: none;
 }
 
 .fade-enter-active,
