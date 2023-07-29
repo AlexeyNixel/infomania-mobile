@@ -11,8 +11,9 @@ import { AffichePlaces } from '@/constants/eventPlace';
 const billboardStore = useBillboardStore();
 const billboards = ref<BillboardType[]>();
 
+const currentDate = ref<string>();
 const events = ref<string[]>([]);
-const place = AffichePlaces
+const place = AffichePlaces;
 
 const startSwipe = ref<number>(0);
 const endSwipe = ref<number>(0);
@@ -35,6 +36,9 @@ const selectDate = (val: CalendarDateType) => {
   if (!calendar.value) return;
 
   calendar.value.selectDate(val);
+  currentDate.value = moment(calendar.value.selectedDay.$d).format(
+    'YYYY-MM-DD',
+  );
   const fromDate = moment(calendar.value.selectedDay.$d)
     .startOf('month')
     .format('YYYY-MM-DD');
@@ -110,23 +114,22 @@ watch(isCalendar, () => {
 </script>
 
 <template>
-  <div class='calendar-menu'>
+  <div class="calendar-menu">
     <div class="date-picker" @click="isCalendar = !isCalendar">
-      <div v-if="currentEvent.length > 0" class='date-picker__content'>
-        <div class='date-picker__day'>
+      <div v-if="currentEvent.length > 0" class="date-picker__content">
+        <div class="date-picker__day">
           {{ moment(currentEvent[0].eventDate).format('DD') }}
           {{ moment(currentEvent[0].eventDate).format('dd') }}
         </div>
-        <div class='date-picker__year'>
-          {{ moment(currentEvent[0].eventDate).format('MMM') }}
-          {{ moment(currentEvent[0].eventDate).format('YYYY') }}
+        <div class="date-picker__year">
+          {{ moment(currentDate).format('MMM') }}
+          {{ moment(currentDate).format('YYYY') }}
         </div>
       </div>
-
     </div>
     <Transition name="fade" mode="out-in">
       <el-calendar v-if="isCalendar" ref="calendar" class="calendar">
-        <template #header='{header}'>
+        <template #header="{ header }">
           <div></div>
         </template>
         <template #date-cell="dateCell">
@@ -150,17 +153,13 @@ watch(isCalendar, () => {
       </el-calendar>
       <div v-else>
         <carousel-template id="event-content" height="274px">
-          <el-carousel-item
-            v-for="item in currentEvent"
-            :key="item.title"
-            class="event-content"
-          >
+          <el-carousel-item v-for="item in currentEvent" :key="item.title">
             <div class="event-content__title">{{ item.title }}</div>
             <el-scrollbar height="400px">
               <div class="event-content__desc" v-html="item.desc"></div>
             </el-scrollbar>
 
-            <div class="event-content__place">{{place[item.eventPlace]}}</div>
+            <div class="event-content__place">{{ place[item.eventPlace] }}</div>
           </el-carousel-item>
         </carousel-template>
       </div>
@@ -178,6 +177,7 @@ watch(isCalendar, () => {
   background: var(--element-bg-color);
   border-radius: var(--border-radius-size);
   margin-bottom: 1vh;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
 
   &__content {
     display: flex;
@@ -189,8 +189,9 @@ watch(isCalendar, () => {
   border-radius: var(--border-radius-size);
   background: var(--element-bg-color);
   flex-direction: column;
-  padding: 5px;
+  padding: 10px;
   display: flex;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
 
   &__title {
     font-size: var(--title-font-size);
@@ -229,11 +230,11 @@ watch(isCalendar, () => {
 .el-calendar {
   background: var(--element-bg-color);
   border-radius: var(--border-radius-size);
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
 }
 
 :deep(.el-calendar__body) {
   padding: 0;
-
 }
 
 :deep(.el-calendar-table .el-calendar-day) {

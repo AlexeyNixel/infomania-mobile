@@ -1,20 +1,20 @@
 <script setup lang="ts">
 const menus = [
   {
-    title: "Читателям",
-    slug: "COMMON",
+    title: 'Читателям',
+    slug: 'COMMON',
   },
   {
-    title: "О библиотеке",
-    slug: "ABOUT",
+    title: 'О библиотеке',
+    slug: 'ABOUT',
   },
   {
-    title: "Коллегам",
-    slug: "COLLEAGUES",
+    title: 'Коллегам',
+    slug: 'COLLEAGUES',
   },
   {
-    title: "Документы",
-    slug: "DOCUMENTS",
+    title: 'Документы',
+    slug: 'DOCUMENTS',
   },
 ];
 </script>
@@ -55,6 +55,7 @@ const menus = [
     color: white;
     font-size: var(--regular-font-size);
     text-decoration: none;
+    font-weight: bold;
 
     &:nth-child(1) {
       background: #f44242;
