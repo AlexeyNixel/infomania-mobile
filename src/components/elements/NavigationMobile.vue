@@ -1,20 +1,20 @@
 <script setup lang="ts">
 const menus = [
   {
-    title: "Читателям",
-    slug: "COMMON",
+    title: 'Читателям',
+    slug: 'COMMON',
   },
   {
-    title: "О библиотеке",
-    slug: "ABOUT",
+    title: 'О библиотеке',
+    slug: 'ABOUT',
   },
   {
-    title: "Коллегам",
-    slug: "COLLEAGUES",
+    title: 'Коллегам',
+    slug: 'COLLEAGUES',
   },
   {
-    title: "Документы",
-    slug: "DOCUMENTS",
+    title: 'Документы',
+    slug: 'DOCUMENTS',
   },
 ];
 </script>
@@ -36,7 +36,7 @@ const menus = [
 
 <style scoped lang="scss">
 .nav-menu {
-  margin: 1vw 0;
+  margin: 1vh 0;
 
   &__content {
     display: flex;
@@ -47,13 +47,15 @@ const menus = [
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 100px;
-    height: 80px;
+    width: 110px;
+    height: 50px;
+    padding: 5px;
     margin-right: 10px;
     border-radius: var(--border-radius-size);
     color: white;
     font-size: var(--regular-font-size);
     text-decoration: none;
+    font-weight: bold;
 
     &:nth-child(1) {
       background: #f44242;

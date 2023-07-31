@@ -1,96 +1,110 @@
-<script setup lang="ts">
+<script setup lang='ts'>
 import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { useGlobalStore } from '@/stores/globalStore';
 import { storeToRefs } from 'pinia';
 import { useFilterStore } from '@/stores/filterStore';
+import SortTemplate from '@/components/elements/filterElements/SortTemplate.vue';
+import DepartmentSortTemplate from '@/components/elements/filterElements/DepartmentSortTemplate.vue';
+import MainSort from '@/components/elements/filterElements/MainSort.vue';
 
-const route = useRoute();
-
-const search = ref<string>();
-const globalStore = useGlobalStore();
 const filterStore = useFilterStore();
-const { dateFilterSelected } = storeToRefs(filterStore);
-const date = ref<string>('Сначала новые');
 
-const { isFiltersWindow } = storeToRefs(globalStore);
+const { isFilter } = storeToRefs(filterStore);
+const { filterComponent } = storeToRefs(filterStore);
 
-// filters option
-const dateFilter = [
-  {
-    title: 'Сначала новые',
-    value: '-publishedAt',
-  },
-  {
-    title: 'Сначала cтарые',
-    value: 'publishedAt',
-  },
-];
+const isSortOpen = ref<boolean>(false);
 
-const closeFilterMenu = (e: Event) => {
-  const filterMenu = document.querySelector('.filters');
-  const clearBtn = document.querySelector('.filters-header__clear');
-  if (e.target !== filterMenu && e.target !== clearBtn)
-    globalStore.isFiltersWindow = !globalStore.isFiltersWindow;
+const component: { [key: string]: any } = {
+  'sort': SortTemplate,
+  'depart': DepartmentSortTemplate,
+  'index': MainSort,
 };
-const toggleEventListener = (isOpen: boolean) => {
-  if (isOpen) {
-    window.addEventListener('click', closeFilterMenu);
-  } else {
-    window.removeEventListener('click', closeFilterMenu);
+
+const closeFilterMenu = () => {
+  if (filterComponent.value !== 'index') {
+    filterComponent.value = 'index';
+    return;
   }
+  isFilter.value = !isFilter.value;
 };
-watch(isFiltersWindow, (val: boolean) => {
-  setTimeout(() => toggleEventListener(val), 300);
-});
+
+watch(isFilter, () => {
+  if(!isFilter.value) document.body.style.overflow = ''
+  else document.body.style.overflow = 'hidden'
+})
 </script>
 
 <template>
-  <Transition name="opacity" :duration="550">
+  <Transition name='opacity' :duration='300'>
     <div
-      class="substrate"
-      v-if="isFiltersWindow"
-      style="transition: all 0.3s"
+      class='substrate'
+      v-if='isFilter || isSortOpen'
+      style='transition: all 0.3s'
+      @click='closeFilterMenu'
     />
   </Transition>
-  <Transition name="nested" :duration="550">
-    <div class="filters outer" v-if="isFiltersWindow">
-      <div class="filters-header">
-        <div class="filters-header__clear filters-header__item">Очистить</div>
-        <div class="filters-header__title filters-header__item">Фильтры</div>
-        <div class="filters-header__close filters-header__item">
-          <font-awesome-icon
-            class="filters-header__icon"
-            :icon="['fas', 'xmark']"
-          />
-        </div>
-      </div>
-      <div class="filters__item">
-        <div class="filters__title">По дате</div>
-        <el-select
-          v-model="dateFilterSelected"
-          class="filters__item"
-          :placeholder="date"
-          size="small"
-        >
-          <el-option
-            v-for="item in dateFilter"
-            :key="item.value"
-            :label="item.title"
-            :value="item.value"
-          />
-        </el-select>
-      </div>
-    </div>
+  <!--  <Transition name='nested' :duration='300'>-->
+  <!--    <div class='filters outer' v-if='isFiltersWindow '>-->
+  <!--      <div class='filters-header'>-->
+  <!--        <div class='filters-header__title filters-header__item'>Фильтры</div>-->
+  <!--        <div class='filters-header__clear filters-header__item'-->
+  <!--             @click='filterStore.clearFilter'>Очистить-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--      <div class='filters-content'>-->
+  <!--        <div class='filters-content__item'>-->
+  <!--          <div class='filters-content__title'>Сортировка</div>-->
+  <!--          <el-select-->
+  <!--            disabled-->
+  <!--            @click='swapWindow("sort")'-->
+  <!--            v-model='dateFilterSelected'-->
+  <!--            placeholder='123'-->
+  <!--          />-->
+  <!--        </div>-->
+  <!--        <div class='filters-content__item'>-->
+  <!--          <div class='filters-content__title'>Определенный год</div>-->
+  <!--          <el-scrollbar>-->
+  <!--            <div class='filters-content__flex'>-->
+  <!--              <div-->
+  <!--                v-for='item in generateYearArray()'-->
+  <!--                :key='item'-->
+  <!--                class='filters-content__year'-->
+  <!--                @click='filterStore.generateDate(item.toString())'-->
+  <!--              >-->
+  <!--                {{ item }}-->
+  <!--              </div>-->
+  <!--            </div>-->
+  <!--          </el-scrollbar>-->
+  <!--        </div>-->
+  <!--        <div class='filters-content__item'>-->
+  <!--          <div class='filters-content__title'>По отделу</div>-->
+  <!--          <el-select-->
+  <!--            disabled-->
+  <!--            @click='swapWindow("depart")'-->
+  <!--            v-model='departmentFilter'-->
+  <!--            placeholder='Отдел'-->
+  <!--          >-->
+  <!--            <el-option-->
+  <!--              v-for='item in departments'-->
+  <!--              :key='item.slug'-->
+  <!--              :label='item.title'-->
+  <!--              :value='item.slug'-->
+  <!--            />-->
+  <!--          </el-select>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </Transition>-->
+  <Transition name='nested' :duration='300'>
+    <component v-if='isFilter' :is='component[filterComponent]'></component>
   </Transition>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang='scss'>
 .filters {
   position: absolute;
   background-color: var(--element-bg-color);
   width: 100%;
-  min-height: 60vh;
+  min-height: 30vh;
   bottom: 0;
   left: 0;
   padding: 10px;
@@ -99,6 +113,7 @@ watch(isFiltersWindow, (val: boolean) => {
   &__title {
     font-size: 0.8rem;
   }
+
   &__item {
     padding: 5px 0;
     width: 100%;
@@ -106,37 +121,32 @@ watch(isFiltersWindow, (val: boolean) => {
   }
 }
 
-:deep(.el-input__inner) {
-  font-size: 0.7rem;
-}
 
-:deep(.el-select-dropdown__item) {
-  font-size: var(--regular-font-size);
-}
 .filters-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid #D5D6D7;
   padding-bottom: 10px;
+  height: 5vh;
 
   &__item {
-    width: 33.33%;
+    width: 50%;
   }
 
   &__title {
-    text-align: center;
+    text-align: left;
     font-weight: bold;
     font-size: 1.3rem;
   }
 
   &__clear {
     font-size: 0.8rem;
+    text-align: right;
   }
 
   &__close {
     text-align: end;
-    //font-size: 0.8rem;
   }
 
   &__icon {
@@ -146,6 +156,59 @@ watch(isFiltersWindow, (val: boolean) => {
     width: 10px;
     border-radius: 50px;
   }
+}
+
+.filters-content {
+  padding: 10px 0;
+
+  &__item {
+    padding: 10px 0;
+    width: 100%;
+
+    .el-select {
+      width: 100%;
+      background: var(--input-bg-color);
+      border-radius: 10px;
+    }
+  }
+
+  &__title {
+    padding-bottom: 5px;
+    font-size: var(--regular-font-size);
+  }
+
+  &__flex {
+    display: flex;
+  }
+
+  &__year {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: none;
+    padding: 15px;
+    margin-right: 10px;
+    background: var(--input-bg-color);
+    font-size: var(--regular-font-size);
+
+    &:active {
+      background: none;
+      transition: .1s;
+    }
+  }
+}
+
+:deep(.el-input__wrapper) {
+  background: var(--input-bg-color);
+  border-radius: 10px;
+  border: none;
+  box-shadow: none;
+}
+
+:deep(.el-scrollbar__bar.is-horizontal) {
+  display: none;
 }
 
 .substrate {
@@ -159,17 +222,10 @@ watch(isFiltersWindow, (val: boolean) => {
   left: 0;
 }
 
-.inner {
-  background: #ccc;
-}
-
+// Animations
 .nested-enter-active,
 .nested-leave-active {
   transition: all 0.3s ease-in-out;
-}
-
-.nested-leave-active {
-  transition-delay: 0.25s;
 }
 
 .nested-enter-from,
@@ -180,6 +236,7 @@ watch(isFiltersWindow, (val: boolean) => {
 
 .opacity-enter-active,
 .opacity-leave-active {
+  transition: all 0.3s ease-in-out;
   opacity: 0.5;
 }
 
