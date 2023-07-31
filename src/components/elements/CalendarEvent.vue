@@ -25,9 +25,9 @@ const { isCalendar } = storeToRefs(billboardStore);
 const { currentEvent } = storeToRefs(billboardStore);
 
 const handleSwipeMonth = () => {
-  if (startSwipe.value - endSwipe.value > 12) {
+  if (startSwipe.value - endSwipe.value > 0) {
     selectDate('next-month');
-  } else if (startSwipe.value - endSwipe.value < -12) {
+  } else if (startSwipe.value - endSwipe.value < 0) {
     selectDate('prev-month');
   }
 };
@@ -104,11 +104,13 @@ watch(isCalendar, () => {
     target.addEventListener('touchmove', (e: any) => {
       if (timer.value) return;
       timer.value = setTimeout(() => {
-        timer.value = null;
         endSwipe.value = e.touches[0].clientX;
         handleSwipeMonth();
       }, 200);
     });
+    target.addEventListener('touchend', () => {
+      timer.value = null
+    })
   });
 });
 </script>
@@ -118,18 +120,30 @@ watch(isCalendar, () => {
     <div class="date-picker" @click="isCalendar = !isCalendar">
       <div v-if="currentEvent.length > 0" class="date-picker__content">
         <div class="date-picker__day">
-          {{ moment(currentEvent[0].eventDate).format('DD') }}
-          {{ moment(currentEvent[0].eventDate).format('dd') }}
+          {{ moment(currentEvent[0].eventDate ||  new Date).format('DD')  }}
+          {{ moment(currentEvent[0].eventDate || new Date).format('dd') }}
         </div>
         <div class="date-picker__year">
           {{ moment(currentDate).format('MMM') }}
           {{ moment(currentDate).format('YYYY') }}
         </div>
       </div>
+
+      <div v-else class="date-picker__content">
+        <div class="date-picker__day">
+          {{ moment(new Date).format('DD')  }}
+          {{ moment(new Date).format('dd') }}
+        </div>
+        <div class="date-picker__year">
+          {{ moment(new Date).format('MMM') }}
+          {{ moment(new Date).format('YYYY') }}
+        </div>
+      </div>
+
     </div>
     <Transition name="fade" mode="out-in">
       <el-calendar v-if="isCalendar" ref="calendar" class="calendar">
-        <template #header="{ header }">
+        <template #header>
           <div></div>
         </template>
         <template #date-cell="dateCell">
@@ -152,16 +166,22 @@ watch(isCalendar, () => {
         </template>
       </el-calendar>
       <div v-else>
-        <carousel-template id="event-content" height="274px">
+        <carousel-template
+          v-if="currentEvent.length > 0"
+          id="event-content"
+          height="274px"
+        >
           <el-carousel-item v-for="item in currentEvent" :key="item.title">
             <div class="event-content__title">{{ item.title }}</div>
             <el-scrollbar height="400px">
               <div class="event-content__desc" v-html="item.desc"></div>
             </el-scrollbar>
-
             <div class="event-content__place">{{ place[item.eventPlace] }}</div>
           </el-carousel-item>
         </carousel-template>
+        <div class='empty-day' v-else>
+          Сегодня событий нет
+        </div>
       </div>
     </Transition>
   </div>
@@ -230,6 +250,16 @@ watch(isCalendar, () => {
 .el-calendar {
   background: var(--element-bg-color);
   border-radius: var(--border-radius-size);
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+}
+
+.empty-day {
+  height: 274px;
+  background: var(--element-bg-color);
+  border-radius: var(--border-radius-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
 }
 

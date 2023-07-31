@@ -26,7 +26,6 @@ const handleSwipeSlides = () => {
 
 onMounted(async () => {
   const target = document.querySelector(`.${props.id}`)!;
-  console.log(target);
   target.addEventListener('touchstart', (e: any) => {
     startSwipe.value = e.touches[0].clientX;
   });
@@ -34,11 +33,13 @@ onMounted(async () => {
   target.addEventListener('touchmove', (e: any) => {
     if (timer.value) return;
     timer.value = setTimeout(() => {
-      timer.value = null;
       endSwipe.value = e.touches[0].clientX;
       handleSwipeSlides();
     }, 300);
   });
+  target.addEventListener('touchend', () => {
+    timer.value = null
+  })
 });
 </script>
 

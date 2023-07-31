@@ -37,7 +37,7 @@ onMounted(async () => {
     <el-scrollbar class="entry-list__container">
       <div class="entry-list__flex">
         <router-link
-          to="#"
+          :to="{name:'entry', params:{slug: item?.slug}}"
           class="entry-item__link"
           v-for="item in items"
           :key="item.id"
@@ -62,7 +62,7 @@ onMounted(async () => {
   &__rubric {
     width: 100%;
     margin: 1vh 0;
-    border-bottom: 1px solid var(--element-bg-color);
+    border-bottom: 1px solid #EDEDED;
     border-radius: 1px;
   }
   &__flex {
