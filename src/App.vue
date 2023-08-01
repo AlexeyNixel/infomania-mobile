@@ -4,17 +4,12 @@
   <filters-menu />
 </template>
 
-<script setup lang='ts'>
-import { RouterView } from 'vue-router';
+<script setup lang="ts">
 import HeaderMobile from '@/components/elements/HeaderMobile.vue';
 import FiltersMenu from '@/components/elements/FiltersMenu.vue';
-import { storeToRefs } from 'pinia';
-import { useGlobalStore } from '@/stores/globalStore';
-import { watch } from 'vue';
+import { useTitle } from '@vueuse/core';
 
-const globalStore = useGlobalStore();
-const { isFiltersWindow } = storeToRefs(globalStore);
-
+useTitle('НОМБ');
 </script>
 
 <style scoped></style>

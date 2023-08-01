@@ -5,7 +5,8 @@ import { onMounted, ref } from 'vue';
 import '@/styles/ck.css';
 import '@/styles/resize.css';
 import { useRoute } from 'vue-router';
-import moment from 'moment'
+import moment from 'moment';
+import { useTitle } from '@vueuse/core';
 
 const route = useRoute();
 const entryStore = useEntryStore();
@@ -15,6 +16,7 @@ onMounted(async () => {
   entry.value = await entryStore.getEntry(route.params.slug as string, {
     include: 'department',
   });
+  useTitle(entry.value?.title);
 });
 </script>
 
@@ -23,8 +25,12 @@ onMounted(async () => {
     <div class="entry__header">
       <div class="entry__title">{{ entry?.title }}</div>
       <div class="entry__info">
-        <div class="entry__date">{{ moment(entry?.publishedAt).format('DD.MM.YYYY') }}</div>
-        <router-link to="" class="entry__department">{{ entry?.department.title }}</router-link>
+        <div class="entry__date">
+          {{ moment(entry?.publishedAt).format('DD.MM.YYYY') }}
+        </div>
+        <router-link to="" class="entry__department">{{
+          entry?.department.title
+        }}</router-link>
       </div>
     </div>
     <div class="entry__content ck-content" v-html="entry?.content"></div>
