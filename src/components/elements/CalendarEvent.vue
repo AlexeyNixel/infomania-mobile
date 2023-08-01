@@ -97,7 +97,7 @@ watch(isCalendar, () => {
     }, 350);
   });
 
-  promise.then((target: Document) => {
+  promise.then((target: Document | any) => {
     target.addEventListener('touchstart', (e: any) => {
       startSwipe.value = e.touches[0].clientX;
     });
