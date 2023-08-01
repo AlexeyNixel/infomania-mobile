@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import { useMenuStore } from "@/stores/menuStore";
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
-import type { MenuType } from "@/models/baseModels";
+import { useMenuStore } from '@/stores/menuStore';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import type { MenuType } from '@/models/baseModels';
+import { useTitle } from '@vueuse/core';
 
-const route = useRoute()
-const menuStore = useMenuStore()
-const menus = ref<MenuType[]>()
+const route = useRoute();
+const menuStore = useMenuStore();
+const menus = ref<MenuType[]>();
 
 onMounted(async () => {
   menus.value = await menuStore.getMenus({
-    searchByField: `menuType=` + route.params.slug as string,
+    searchByField: (`menuType=` + route.params.slug) as string,
     include: 'menuItems',
-  })
-})
+  });
+});
+useTitle('Меню');
 </script>
 
 <template>
@@ -21,9 +23,9 @@ onMounted(async () => {
     <div class="menus__title">{{ item.title }}</div>
     <div v-for="menu in item.menuItems" :key="menu.id">
       <router-link
-          :to='{name:"document", params:{slug:menu.slug}}'
-          class="menus__item"
-          v-if="!menu.link"
+        :to="{ name: 'document', params: { slug: menu.slug } }"
+        class="menus__item"
+        v-if="!menu.link"
       >
         {{ menu.title }}
       </router-link>

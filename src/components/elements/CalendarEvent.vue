@@ -109,8 +109,8 @@ watch(isCalendar, () => {
       }, 200);
     });
     target.addEventListener('touchend', () => {
-      timer.value = null
-    })
+      timer.value = null;
+    });
   });
 });
 </script>
@@ -120,8 +120,8 @@ watch(isCalendar, () => {
     <div class="date-picker" @click="isCalendar = !isCalendar">
       <div v-if="currentEvent.length > 0" class="date-picker__content">
         <div class="date-picker__day">
-          {{ moment(currentEvent[0].eventDate ||  new Date).format('DD')  }}
-          {{ moment(currentEvent[0].eventDate || new Date).format('dd') }}
+          {{ moment(currentEvent[0].eventDate || new Date()).format('DD') }}
+          {{ moment(currentEvent[0].eventDate || new Date()).format('dd') }}
         </div>
         <div class="date-picker__year">
           {{ moment(currentDate).format('MMM') }}
@@ -131,15 +131,14 @@ watch(isCalendar, () => {
 
       <div v-else class="date-picker__content">
         <div class="date-picker__day">
-          {{ moment(new Date).format('DD')  }}
-          {{ moment(new Date).format('dd') }}
+          {{ moment(new Date()).format('DD') }}
+          {{ moment(new Date()).format('dd') }}
         </div>
         <div class="date-picker__year">
-          {{ moment(new Date).format('MMM') }}
-          {{ moment(new Date).format('YYYY') }}
+          {{ moment(new Date()).format('MMM') }}
+          {{ moment(new Date()).format('YYYY') }}
         </div>
       </div>
-
     </div>
     <Transition name="fade" mode="out-in">
       <el-calendar v-if="isCalendar" ref="calendar" class="calendar">
@@ -179,9 +178,7 @@ watch(isCalendar, () => {
             <div class="event-content__place">{{ place[item.eventPlace] }}</div>
           </el-carousel-item>
         </carousel-template>
-        <div class='empty-day' v-else>
-          Сегодня событий нет
-        </div>
+        <div class="empty-day" v-else>Сегодня событий нет</div>
       </div>
     </Transition>
   </div>
@@ -300,7 +297,6 @@ watch(isCalendar, () => {
 
 .fade-enter-from,
 .fade-leave-to {
-  transform: translateY(30px);
   opacity: 0;
 }
 </style>

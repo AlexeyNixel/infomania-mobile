@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { EntryType, MetaType } from '@/models/baseModels';
+import type { EntryType } from '@/models/baseModels';
 import { useEntryStore } from '@/stores/entryStore';
 import { onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import EntryPlate from '@/components/UI/EntryPlate.vue';
 import { useFilterStore } from '@/stores/filterStore';
 import { storeToRefs } from 'pinia';
+import { useTitle } from '@vueuse/core';
 
 const route = useRoute();
 const router = useRouter();
@@ -20,6 +21,8 @@ const { dateFilterSelected } = storeToRefs(filterStore);
 const { departmentFilter } = storeToRefs(filterStore);
 const { isFilter } = storeToRefs(filterStore);
 const { toDate } = storeToRefs(filterStore);
+
+useTitle('Поиск');
 
 const entries = ref<EntryType[]>();
 
