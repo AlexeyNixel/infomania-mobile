@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    image: nixel666/frontend-mobile
+    env_file:
+      - .env
+    ports:
+      - "3002:80"
