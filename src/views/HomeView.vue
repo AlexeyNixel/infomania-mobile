@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import { useTitle } from '@vueuse/core';
-import FooterMobile from '@/components/FooterMobile.vue';
+import FooterMobile from '@/components/elements/FooterMobile.vue';
 import SliderMobile from '@/components/elements/SliderMobile.vue';
 import NavigationMobile from '@/components/elements/NavigationMobile.vue';
 import CalendarEvent from '@/components/elements/CalendarEvent.vue';

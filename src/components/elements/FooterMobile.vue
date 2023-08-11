@@ -47,11 +47,12 @@
 
 <style scoped lang="scss">
 .footer {
-  background: var(--element-bg-color);
+  background: var(--footer-bg-color);
   border-radius: 10px 10px 0 0;
   padding: 10px;
   font-size: var(--regular-font-size);
   margin-top: 1vh;
+  color: white;
 
   &__link {
     color: white;
@@ -65,7 +66,7 @@
 
   &__icon {
     padding: 10px;
-    background: #3e3f40;
+    background: var(--icon-bg-color);
     border-radius: 10px;
     margin-right: 10px;
   }
@@ -78,13 +79,13 @@
     width: 25px;
     height: 25px;
     padding: 5px;
-    background: #3e3f40;
+    background: var(--icon-bg-color);
     border-radius: 10px;
     margin-right: 1vw;
   }
 
   &__copyright {
-    color: gray;
+    color: white;
   }
 }
 </style>

@@ -178,7 +178,6 @@ watch(isCalendar, () => {
             <div class="event-content__place">{{ place[item.eventPlace] }}</div>
           </el-carousel-item>
         </carousel-template>
-        <div class="empty-day" v-else>Сегодня событий нет</div>
       </div>
     </Transition>
   </div>
