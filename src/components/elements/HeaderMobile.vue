@@ -31,7 +31,19 @@ const links = [
     icon: ['fas', 'clock'],
     event: () => (isWorkTime.value = !isWorkTime.value),
   },
-  { icon: ['fas', 'wheelchair-move'] },
+  {
+    icon: ['fas', 'wheelchair-move'],
+
+    event: () =>
+      router.push({
+        name: 'entry',
+        params: { slug: 'dostupnaya-sreda-03-32-22-10-22' },
+      }),
+  },
+  {
+    icon: ['fas', 'graduation-cap'],
+    event: () => router.push({ name: 'information' }),
+  },
   { icon: ['fas', 'sun'], style: 'sun', event: handleDarkMode },
 ];
 
@@ -87,15 +99,22 @@ watch(route, () => {
     width: 50%;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
 
   &__btn {
     font-size: 1.4rem;
+    margin: 0;
   }
 
   &__icon {
     color: #007bff;
+    font-size: 1.4rem;
   }
+}
+
+.el-button + .el-button {
+  margin: 0;
 }
 
 .sun {
