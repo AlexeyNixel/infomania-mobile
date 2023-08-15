@@ -34,10 +34,10 @@ onMounted(async () => {
 <template>
   <div class="entry-list" v-for="(items, rubric) in menus" :key="rubric">
     <div class="entry-list__rubric"></div>
-    <el-scrollbar class="entry-list__container">
+    <el-scrollbar>
       <div class="entry-list__flex">
         <router-link
-          :to="{name:'entry', params:{slug: item?.slug}}"
+          :to="{ name: 'entry', params: { slug: item?.slug } }"
           class="entry-item__link"
           v-for="item in items"
           :key="item.id"
@@ -62,7 +62,7 @@ onMounted(async () => {
   &__rubric {
     width: 100%;
     margin: 1vh 0;
-    border-bottom: 1px solid #EDEDED;
+    border-bottom: 1px solid #ededed;
     border-radius: 1px;
   }
   &__flex {
@@ -112,5 +112,8 @@ onMounted(async () => {
     align-self: end;
     font-size: var(--regular-font-size);
   }
+}
+:deep(.el-scrollbar__bar.is-horizontal) {
+  display: none;
 }
 </style>

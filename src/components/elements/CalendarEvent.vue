@@ -172,7 +172,7 @@ watch(isCalendar, () => {
         >
           <el-carousel-item v-for="item in currentEvent" :key="item.title">
             <div class="event-content__title">{{ item.title }}</div>
-            <el-scrollbar height="400px">
+            <el-scrollbar height="250px">
               <div class="event-content__desc" v-html="item.desc"></div>
             </el-scrollbar>
             <div class="event-content__place">{{ place[item.eventPlace] }}</div>
