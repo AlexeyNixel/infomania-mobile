@@ -2,11 +2,19 @@
 import { ref, watch } from 'vue';
 import { useDark, useToggle } from '@vueuse/core';
 import { useRoute, useRouter } from 'vue-router';
+import { useGlobalStore } from '@/stores/globalStore';
+import { storeToRefs } from 'pinia';
+import WorkTime from '@/components/modalWindows/WorkTime.vue';
+import LibraryOnMap from '@/components/modalWindows/LibraryOnMap.vue';
 
 const route = useRoute();
 const router = useRouter();
 const darkMode = useDark();
+const globalStore = useGlobalStore();
 const toggleDark = useToggle(darkMode);
+
+const { isWorkTime } = storeToRefs(globalStore);
+const { isLibraryOnMap } = storeToRefs(globalStore);
 
 const isFilter = ref<boolean>(false);
 
@@ -15,8 +23,14 @@ const handleRouteSearch = () => router.push({ name: 'search' });
 
 const links = [
   { icon: ['fas', 'magnifying-glass'], event: handleRouteSearch },
-  { icon: ['fas', 'map-location-dot'] },
-  { icon: ['fas', 'clock'] },
+  {
+    icon: ['fas', 'map-location-dot'],
+    event: () => (isLibraryOnMap.value = !isLibraryOnMap.value),
+  },
+  {
+    icon: ['fas', 'clock'],
+    event: () => (isWorkTime.value = !isWorkTime.value),
+  },
   { icon: ['fas', 'wheelchair-move'] },
   { icon: ['fas', 'sun'], style: 'sun', event: handleDarkMode },
 ];
@@ -48,6 +62,8 @@ watch(route, () => {
       </el-button>
     </div>
   </header>
+  <work-time />
+  <library-on-map />
 </template>
 
 <style scoped lang="scss">
