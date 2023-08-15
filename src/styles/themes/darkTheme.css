@@ -1,6 +1,9 @@
 html.dark {
     --font-color:white;
+    --font-color-alt: #bebcbc;
     --element-bg-color: #222222;
     --logo-color:white;
     --input-bg-color: #3E3F40;
+    --footer-bg-color:#222222;
+    --icon-bg-color:#3e3f40;
 }

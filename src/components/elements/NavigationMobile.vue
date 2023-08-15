@@ -74,4 +74,8 @@ const menus = [
     }
   }
 }
+
+:deep(.el-scrollbar__bar.is-horizontal) {
+  display: none;
+}
 </style>

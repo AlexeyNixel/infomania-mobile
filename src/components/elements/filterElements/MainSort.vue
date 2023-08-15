@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useGlobalStore } from '@/stores/globalStore';
 import { storeToRefs } from 'pinia';
@@ -7,7 +7,6 @@ import moment from 'moment';
 import type { DepartmentType } from '@/models/baseModels';
 import SortTemplate from '@/components/elements/filterElements/SortTemplate.vue';
 import DepartmentSortTemplate from '@/components/elements/filterElements/DepartmentSortTemplate.vue';
-import { valueEquals } from 'element-plus';
 import { useDepartmentStore } from '@/stores/departmentStore';
 
 const globalStore = useGlobalStore();
@@ -23,8 +22,8 @@ const isSortOpen = ref<boolean>(false);
 const departments = ref<DepartmentType[]>();
 
 const component: { [key: string]: any } = {
-  'sort': SortTemplate,
-  'depart': DepartmentSortTemplate,
+  sort: SortTemplate,
+  depart: DepartmentSortTemplate,
 };
 
 const swapWindow = (model: string) => {
@@ -43,56 +42,59 @@ const generateYearArray = () => {
 };
 
 onMounted(async () => {
-  departments.value = await departmentStore.getDepartments()
-})
+  departments.value = await departmentStore.getDepartments();
+});
 </script>
 
 <template>
-  <div class='filters outer'>
-    <div class='filters-header'>
-      <div class='filters-header__title filters-header__item'>Фильтры</div>
-      <div class='filters-header__clear filters-header__item'
-           @click='filterStore.clearFilter'>Очистить
+  <div class="filters outer">
+    <div class="filters-header">
+      <div class="filters-header__title filters-header__item">Фильтры</div>
+      <div
+        class="filters-header__clear filters-header__item"
+        @click="filterStore.clearFilter"
+      >
+        Очистить
       </div>
     </div>
-    <div class='filters-content'>
-      <div class='filters-content__item'>
-        <div class='filters-content__title'>Сортировка</div>
+    <div class="filters-content">
+      <div class="filters-content__item">
+        <div class="filters-content__title">Сортировка</div>
         <el-select
           disabled
-          @click='swapWindow("sort")'
-          v-model='dateFilterSelected'
-          placeholder='123'
+          @click="swapWindow('sort')"
+          v-model="dateFilterSelected"
+          placeholder="123"
         />
       </div>
-      <div class='filters-content__item'>
-        <div class='filters-content__title'>Определенный год</div>
+      <div class="filters-content__item">
+        <div class="filters-content__title">Определенный год</div>
         <el-scrollbar>
-          <div class='filters-content__flex'>
+          <div class="filters-content__flex">
             <div
-              v-for='item in generateYearArray()'
-              :key='item'
-              class='filters-content__year'
-              @click='filterStore.generateDate(item.toString())'
+              v-for="item in generateYearArray()"
+              :key="item"
+              class="filters-content__year"
+              @click="filterStore.generateDate(item.toString())"
             >
               {{ item }}
             </div>
           </div>
         </el-scrollbar>
       </div>
-      <div class='filters-content__item'>
-        <div class='filters-content__title'>По отделу</div>
+      <div class="filters-content__item">
+        <div class="filters-content__title">По отделу</div>
         <el-select
           disabled
-          @click='swapWindow("depart")'
-          v-model='departmentFilter'
-          placeholder='Отдел'
+          @click="swapWindow('depart')"
+          v-model="departmentFilter"
+          placeholder="Отдел"
         >
           <el-option
-            v-for='item in departments'
-            :key='item.slug'
-            :label='item.title'
-            :value='item.slug'
+            v-for="item in departments"
+            :key="item.slug"
+            :label="item.title"
+            :value="item.slug"
           />
         </el-select>
       </div>
@@ -100,7 +102,7 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .filters {
   position: absolute;
   background-color: var(--element-bg-color);
@@ -122,12 +124,11 @@ onMounted(async () => {
   }
 }
 
-
 .filters-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #D5D6D7;
+  border-bottom: 1px solid #d5d6d7;
   padding-bottom: 10px;
   height: 5vh;
 
@@ -196,7 +197,7 @@ onMounted(async () => {
 
     &:active {
       background: none;
-      transition: .1s;
+      transition: 0.1s;
     }
   }
 }

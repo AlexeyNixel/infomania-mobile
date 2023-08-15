@@ -4,7 +4,7 @@ import { ElSlider } from 'element-plus';
 
 type PropsType = {
   id: string;
-  height: string
+  height: string;
 };
 
 const props = defineProps<PropsType>();
@@ -16,10 +16,10 @@ const startSwipe = ref<number>(0);
 const endSwipe = ref<number>(0);
 
 const handleSwipeSlides = () => {
-  const direction = startSwipe.value - endSwipe.value > 0 ? 'left' : 'right';
-  if (direction === 'left') {
+  if (startSwipe.value - endSwipe.value > 12) {
     slider.value.next();
-  } else {
+  }
+  if (startSwipe.value - endSwipe.value < -12) {
     slider.value.prev();
   }
 };
@@ -38,8 +38,8 @@ onMounted(async () => {
     }, 300);
   });
   target.addEventListener('touchend', () => {
-    timer.value = null
-  })
+    timer.value = null;
+  });
 });
 </script>
 

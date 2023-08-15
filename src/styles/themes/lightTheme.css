@@ -1,6 +1,9 @@
 html {
     --font-color:black;
+    --font-color-alt: #535353;
     --element-bg-color: #ffffff;
     --logo-color:black;
     --input-bg-color:#F2F3F5;
+    --footer-bg-color:#007bff;
+    --icon-bg-color:#055cba;
 }
