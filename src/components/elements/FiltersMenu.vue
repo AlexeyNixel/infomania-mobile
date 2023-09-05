@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import { ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useFilterStore } from '@/stores/filterStore';
@@ -14,9 +14,9 @@ const { filterComponent } = storeToRefs(filterStore);
 const isSortOpen = ref<boolean>(false);
 
 const component: { [key: string]: any } = {
-  'sort': SortTemplate,
-  'depart': DepartmentSortTemplate,
-  'index': MainSort,
+  sort: SortTemplate,
+  depart: DepartmentSortTemplate,
+  index: MainSort,
 };
 
 const closeFilterMenu = () => {
@@ -28,78 +28,26 @@ const closeFilterMenu = () => {
 };
 
 watch(isFilter, () => {
-  if(!isFilter.value) document.body.style.overflow = ''
-  else document.body.style.overflow = 'hidden'
-})
+  if (!isFilter.value) document.body.style.overflow = '';
+  else document.body.style.overflow = 'hidden';
+});
 </script>
 
 <template>
-  <Transition name='opacity' :duration='300'>
+  <Transition name="opacity" :duration="300">
     <div
-      class='substrate'
-      v-if='isFilter || isSortOpen'
-      style='transition: all 0.3s'
-      @click='closeFilterMenu'
+      class="substrate"
+      v-if="isFilter || isSortOpen"
+      style="transition: all 0.3s"
+      @click="closeFilterMenu"
     />
   </Transition>
-  <!--  <Transition name='nested' :duration='300'>-->
-  <!--    <div class='filters outer' v-if='isFiltersWindow '>-->
-  <!--      <div class='filters-header'>-->
-  <!--        <div class='filters-header__title filters-header__item'>Фильтры</div>-->
-  <!--        <div class='filters-header__clear filters-header__item'-->
-  <!--             @click='filterStore.clearFilter'>Очистить-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--      <div class='filters-content'>-->
-  <!--        <div class='filters-content__item'>-->
-  <!--          <div class='filters-content__title'>Сортировка</div>-->
-  <!--          <el-select-->
-  <!--            disabled-->
-  <!--            @click='swapWindow("sort")'-->
-  <!--            v-model='dateFilterSelected'-->
-  <!--            placeholder='123'-->
-  <!--          />-->
-  <!--        </div>-->
-  <!--        <div class='filters-content__item'>-->
-  <!--          <div class='filters-content__title'>Определенный год</div>-->
-  <!--          <el-scrollbar>-->
-  <!--            <div class='filters-content__flex'>-->
-  <!--              <div-->
-  <!--                v-for='item in generateYearArray()'-->
-  <!--                :key='item'-->
-  <!--                class='filters-content__year'-->
-  <!--                @click='filterStore.generateDate(item.toString())'-->
-  <!--              >-->
-  <!--                {{ item }}-->
-  <!--              </div>-->
-  <!--            </div>-->
-  <!--          </el-scrollbar>-->
-  <!--        </div>-->
-  <!--        <div class='filters-content__item'>-->
-  <!--          <div class='filters-content__title'>По отделу</div>-->
-  <!--          <el-select-->
-  <!--            disabled-->
-  <!--            @click='swapWindow("depart")'-->
-  <!--            v-model='departmentFilter'-->
-  <!--            placeholder='Отдел'-->
-  <!--          >-->
-  <!--            <el-option-->
-  <!--              v-for='item in departments'-->
-  <!--              :key='item.slug'-->
-  <!--              :label='item.title'-->
-  <!--              :value='item.slug'-->
-  <!--            />-->
-  <!--          </el-select>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--  </Transition>-->
-  <Transition name='nested' :duration='300'>
-    <component v-if='isFilter' :is='component[filterComponent]'></component>
+  <Transition name="nested" :duration="300">
+    <component v-if="isFilter" :is="component[filterComponent]"></component>
   </Transition>
 </template>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .filters {
   position: absolute;
   background-color: var(--element-bg-color);
@@ -121,12 +69,11 @@ watch(isFilter, () => {
   }
 }
 
-
 .filters-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #D5D6D7;
+  border-bottom: 1px solid #d5d6d7;
   padding-bottom: 10px;
   height: 5vh;
 
@@ -195,7 +142,7 @@ watch(isFilter, () => {
 
     &:active {
       background: none;
-      transition: .1s;
+      transition: 0.1s;
     }
   }
 }

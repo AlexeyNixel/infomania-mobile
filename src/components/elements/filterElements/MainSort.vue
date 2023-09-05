@@ -61,7 +61,6 @@ onMounted(async () => {
       <div class="filters-content__item">
         <div class="filters-content__title">Сортировка</div>
         <el-select
-          disabled
           @click="swapWindow('sort')"
           v-model="dateFilterSelected"
           placeholder="123"
@@ -85,7 +84,6 @@ onMounted(async () => {
       <div class="filters-content__item">
         <div class="filters-content__title">По отделу</div>
         <el-select
-          disabled
           @click="swapWindow('depart')"
           v-model="departmentFilter"
           placeholder="Отдел"
