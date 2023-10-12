@@ -14,7 +14,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <carousel-template id="slider" height='150px'>
+  <carousel-template id="slider" height="34vw">
     <el-carousel-item v-for="item in slides" :key="item" class="slider__item">
       <router-link :to="{ name: 'entry', params: { slug: item.entry.slug } }">
         <img :src="staticUrl + item.image.path" alt="" class="slider__img" />
